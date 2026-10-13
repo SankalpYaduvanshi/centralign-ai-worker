@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Contacts Directory - CentrAlign Internal Portal{% endblock %}
+
+{% block content %}
+<section class="page-header-row">
+  <div>
+    <h1 id="page-title">Contacts Directory</h1>
+    <p id="page-subtitle">Key vendor representatives and internal department points-of-contact</p>
+  </div>
+</section>
+
+<!-- Contacts Table -->
+<div class="overflow-auto">
+  <table id="contacts-table">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Name</th>
+        <th scope="col">Email Address</th>
+        <th scope="col">Company / Organization</th>
+        <th scope="col">Role / Title</th>
+      </tr>
+    </thead>
+    <tbody id="contacts-table-body">
+      {% for c in contacts %}
+      <tr
+        id="contact-row-{{ c.id }}"
+        data-id="{{ c.id }}"
+        data-company="{{ c.company }}"
+      >
+        <td id="contact-id-{{ c.id }}"><strong>{{ c.id }}</strong></td>
+        <td id="contact-name-{{ c.id }}">{{ c.name }}</td>
+        <td id="contact-email-{{ c.id }}">
+          <a href="mailto:{{ c.email }}" id="contact-email-link-{{ c.id }}">{{ c.email }}</a>
+        </td>
+        <td id="contact-company-{{ c.id }}">
+          <span class="badge badge-medium">{{ c.company }}</span>
+        </td>
+        <td id="contact-role-{{ c.id }}">{{ c.role }}</td>
+      </tr>
+      {% else %}
+      <tr id="no-contacts-row">
+        <td colspan="5" style="text-align: center; padding: 2rem;">
+          No contacts recorded.
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

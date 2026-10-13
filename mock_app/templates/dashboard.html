@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - CentrAlign Internal Portal{% endblock %}
+
+{% block content %}
+<section id="dashboard-header" class="page-header-row">
+  <div>
+    <h1 id="page-title">Operations Dashboard</h1>
+    <p id="page-subtitle">Real-time status of invoices, expenses, tasks, and contacts</p>
+  </div>
+  <div>
+    <a href="/expenses/new" role="button" id="btn-quick-new-expense">+ Record Expense</a>
+  </div>
+</section>
+
+<!-- KPI Stats Grid -->
+<div class="stats-grid" id="stats-summary">
+  <div class="stat-card" id="stat-invoices">
+    <h3>Vendor Invoices</h3>
+    <div class="stat-value" id="stat-invoices-count">{{ stats.total_invoices }}</div>
+    <div class="stat-sub" id="stat-invoices-sub">
+      <strong>{{ stats.pending_invoices }}</strong> pending &bull; ${{ "%.2f"|format(stats.total_invoice_amount) }} total
+    </div>
+  </div>
+
+  <div class="stat-card" id="stat-expenses">
+    <h3>Logged Expenses</h3>
+    <div class="stat-value" id="stat-expenses-amount">${{ "%.2f"|format(stats.total_expenses_amount) }}</div>
+    <div class="stat-sub" id="stat-expenses-sub">
+      <strong>{{ stats.total_expenses }}</strong> entries &bull; ${{ "%.2f"|format(stats.pending_expenses_amount) }} pending
+    </div>
+  </div>
+
+  <div class="stat-card" id="stat-tasks">
+    <h3>Active Tasks</h3>
+    <div class="stat-value" id="stat-tasks-count">{{ stats.active_tasks }}</div>
+    <div class="stat-sub" id="stat-tasks-sub">
+      <strong>{{ stats.urgent_tasks }}</strong> urgent &bull; {{ stats.done_tasks }} completed
+    </div>
+  </div>
+
+  <div class="stat-card" id="stat-contacts">
+    <h3>Directory Contacts</h3>
+    <div class="stat-value" id="stat-contacts-count">{{ stats.total_contacts }}</div>
+    <div class="stat-sub" id="stat-contacts-sub">Vendors and internal leads</div>
+  </div>
+</div>
+
+<!-- Recent Invoices and Urgent Tasks -->
+<div class="grid">
+  <article id="recent-invoices-section">
+    <header class="page-header-row" style="margin-bottom: 0.5rem;">
+      <h2 style="font-size: 1.15rem;">Pending Invoices</h2>
+      <a href="/invoices" id="link-view-all-invoices"><small>View all ({{ stats.total_invoices }}) →</small></a>
+    </header>
+    <div class="overflow-auto">
+      <table id="dashboard-invoices-table">
+        <thead>
+          <tr>
+            <th>Invoice #</th>
+            <th>Vendor</th>
+            <th>Amount</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for inv in pending_invoices_list %}
+          <tr id="dash-inv-row-{{ inv.id }}" data-id="{{ inv.id }}" data-vendor="{{ inv.vendor_name }}">
+            <td><a href="/invoices/{{ inv.id }}" id="dash-inv-link-{{ inv.id }}">{{ inv.invoice_number }}</a></td>
+            <td>{{ inv.vendor_name }}</td>
+            <td>${{ "%.2f"|format(inv.amount) }}</td>
+            <td><span class="badge badge-{{ inv.status }}">{{ inv.status }}</span></td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="4">No pending invoices found.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </article>
+
+  <article id="urgent-tasks-section">
+    <header class="page-header-row" style="margin-bottom: 0.5rem;">
+      <h2 style="font-size: 1.15rem;">Priority Tasks</h2>
+      <a href="/tasks" id="link-view-all-tasks"><small>View board →</small></a>
+    </header>
+    <div class="overflow-auto">
+      <table id="dashboard-tasks-table">
+        <thead>
+          <tr>
+            <th>Task</th>
+            <th>Priority</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for tsk in priority_tasks_list %}
+          <tr id="dash-task-row-{{ tsk.id }}" data-id="{{ tsk.id }}">
+            <td>{{ tsk.title }}</td>
+            <td><span class="badge badge-{{ tsk.priority }}">{{ tsk.priority }}</span></td>
+            <td><span class="badge badge-{{ tsk.status }}">{{ tsk.status }}</span></td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="3">No active high priority tasks.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </article>
+</div>
+{% endblock %}

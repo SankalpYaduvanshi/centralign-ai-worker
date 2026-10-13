@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}New Expense Entry - CentrAlign Portal{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+  <ul>
+    <li><a href="/expenses" id="back-to-expenses">← Back to Expenses</a></li>
+    <li id="breadcrumb-current">New Expense</li>
+  </ul>
+</nav>
+
+<article id="expense-form-card" style="max-width: 680px; margin: 0 auto;">
+  <header>
+    <h1 id="page-title" style="font-size: 1.5rem; margin-bottom: 0.25rem;">Record New Expense</h1>
+    <p id="page-subtitle" style="margin: 0; color: var(--pico-muted-color);">
+      Submit an expense item for finance auditing and reimbursement.
+    </p>
+  </header>
+
+  {% if error %}
+  <div id="form-error-banner" style="background-color: #fee2e2; border: 1px solid #f87171; color: #991b1b; padding: 0.75rem 1rem; border-radius: 6px; margin-bottom: 1rem;">
+    <strong>Error:</strong> <span id="error-message-text">{{ error }}</span>
+  </div>
+  {% endif %}
+
+  <form id="expense-form" method="post" action="/expenses/new">
+    <label for="description">
+      Expense Description <span style="color: red;">*</span>
+      <input
+        type="text"
+        id="description"
+        name="description"
+        placeholder="e.g. AWS Production Database hosting renewal"
+        required
+      />
+      <small>Describe the business purpose of this expenditure.</small>
+    </label>
+
+    <div class="grid">
+      <label for="amount">
+        Amount (USD) <span style="color: red;">*</span>
+        <input
+          type="number"
+          step="0.01"
+          min="0.01"
+          id="amount"
+          name="amount"
+          placeholder="0.00"
+          required
+        />
+      </label>
+
+      <label for="category">
+        Category <span style="color: red;">*</span>
+        <select id="category" name="category" required>
+          <option value="" disabled selected>Select category...</option>
+          <option value="Software">Software & Cloud Services</option>
+          <option value="Hardware">Hardware & Infrastructure</option>
+          <option value="Security">Security & Compliance</option>
+          <option value="Office Supplies">Office Supplies & Furniture</option>
+          <option value="Travel">Travel & Lodging</option>
+          <option value="Meals">Meals & Catering</option>
+          <option value="Marketing">Marketing & Advertising</option>
+          <option value="Consulting">Professional Consulting</option>
+          <option value="Other">Other Operational</option>
+        </select>
+      </label>
+    </div>
+
+    <label for="invoice_ref">
+      Invoice Reference (Optional)
+      <input
+        type="text"
+        id="invoice_ref"
+        name="invoice_ref"
+        placeholder="e.g. INV-ACM-2024-001 or INV-001"
+        value="{{ invoice_ref or '' }}"
+      />
+      <small>Link to a corresponding vendor invoice number if applicable.</small>
+    </label>
+
+    <label for="created_by">
+      Submitted By <span style="color: red;">*</span>
+      <input
+        type="text"
+        id="created_by"
+        name="created_by"
+        placeholder="e.g. agent@centralign.io or employee name"
+        value="{{ created_by or 'ai-worker@centralign.io' }}"
+        required
+      />
+    </label>
+
+    <div style="display: flex; gap: 1rem; margin-top: 1.5rem; justify-content: flex-end;">
+      <a href="/expenses" role="button" class="secondary outline" id="btn-cancel-expense">Cancel</a>
+      <button type="submit" id="submit-expense">Submit Expense</button>
+    </div>
+  </form>
+</article>
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Invoice {{ invoice.invoice_number }} - CentrAlign Portal{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+  <ul>
+    <li><a href="/invoices" id="back-to-invoices">← Back to Invoices</a></li>
+    <li id="breadcrumb-current">{{ invoice.invoice_number }}</li>
+  </ul>
+</nav>
+
+<article id="invoice-detail-card" data-id="{{ invoice.id }}" data-vendor="{{ invoice.vendor_name }}">
+  <header class="page-header-row">
+    <div>
+      <h1 id="detail-invoice-number">{{ invoice.invoice_number }}</h1>
+      <p id="detail-vendor-name" style="margin: 0;">Vendor: <strong>{{ invoice.vendor_name }}</strong></p>
+    </div>
+    <div style="text-align: right;">
+      <span class="badge badge-{{ invoice.status }}" id="detail-status" style="font-size: 0.9rem; padding: 0.4rem 0.8rem;">
+        {{ invoice.status }}
+      </span>
+      <div style="margin-top: 0.5rem;">
+        <small id="detail-id">System ID: {{ invoice.id }}</small>
+      </div>
+    </div>
+  </header>
+
+  <!-- Summary metadata grid -->
+  <div class="grid" style="margin-bottom: 2rem;">
+    <div>
+      <small>Total Amount</small>
+      <div id="detail-amount" style="font-size: 1.5rem; font-weight: bold;">
+        ${{ "%.2f"|format(invoice.amount) }} <span id="detail-currency" style="font-size: 1rem; font-weight: normal;">{{ invoice.currency }}</span>
+      </div>
+    </div>
+    <div>
+      <small>Payment Due Date</small>
+      <div id="detail-due-date" style="font-size: 1.2rem; font-weight: 600;">
+        {{ invoice.due_date }}
+      </div>
+    </div>
+    <div>
+      <small>Recorded Date</small>
+      <div id="detail-created-at" style="font-size: 1.2rem; font-weight: 600;">
+        {{ invoice.created_at }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Line Items Table -->
+  <h2 style="font-size: 1.2rem;">Line Items Breakdown</h2>
+  <div class="overflow-auto">
+    <table id="invoice-items-table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Description</th>
+          <th scope="col" style="text-align: right;">Quantity</th>
+          <th scope="col" style="text-align: right;">Unit Price</th>
+          <th scope="col" style="text-align: right;">Line Total</th>
+        </tr>
+      </thead>
+      <tbody id="invoice-items-tbody">
+        {% for item in invoice.items %}
+        <tr id="item-row-{{ loop.index }}" data-item-index="{{ loop.index }}">
+          <td id="item-num-{{ loop.index }}">{{ loop.index }}</td>
+          <td id="item-desc-{{ loop.index }}">{{ item.description }}</td>
+          <td id="item-qty-{{ loop.index }}" style="text-align: right;">{{ item.quantity }}</td>
+          <td id="item-price-{{ loop.index }}" style="text-align: right;">${{ "%.2f"|format(item.unit_price) }}</td>
+          <td id="item-total-{{ loop.index }}" style="text-align: right;">${{ "%.2f"|format(item.total) }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr>
+          <th colspan="4" style="text-align: right;">Total Balance Due:</th>
+          <th id="items-grand-total" style="text-align: right;">${{ "%.2f"|format(invoice.amount) }} {{ invoice.currency }}</th>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <footer style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <a href="/invoices" role="button" class="secondary outline" id="btn-bottom-back">Back to Invoices</a>
+    </div>
+    <div>
+      <a
+        href="/expenses/new?invoice_ref={{ invoice.invoice_number }}"
+        role="button"
+        id="btn-create-expense-ref"
+      >
+        Record Expense for this Invoice
+      </a>
+    </div>
+  </footer>
+</article>
+{% endblock %}

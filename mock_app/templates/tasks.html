@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Task Board - CentrAlign Internal Portal{% endblock %}
+
+{% block content %}
+<section class="page-header-row">
+  <div>
+    <h1 id="page-title">Operations Task Board</h1>
+    <p id="page-subtitle">Track operational workflows, reviews, and autonomous agent tasks</p>
+  </div>
+</section>
+
+<!-- Kanban Columns Grid -->
+<div class="kanban-board" id="tasks-board">
+  <!-- To Do Column -->
+  <div class="kanban-column" id="col-todo">
+    <div class="kanban-column-header">
+      <h3>To Do</h3>
+      <span class="badge badge-todo" id="count-todo">{{ tasks_by_status.get('todo', [])|length }}</span>
+    </div>
+    <div class="kanban-column-body" id="list-todo">
+      {% for t in tasks_by_status.get('todo', []) %}
+      <div
+        class="task-card"
+        id="task-card-{{ t.id }}"
+        data-id="{{ t.id }}"
+        data-status="{{ t.status }}"
+        data-priority="{{ t.priority }}"
+      >
+        <h4 id="task-title-{{ t.id }}">{{ t.title }}</h4>
+        <p id="task-desc-{{ t.id }}">{{ t.description }}</p>
+        <div class="task-meta">
+          <span class="badge badge-{{ t.priority }}" id="task-priority-{{ t.id }}">{{ t.priority }}</span>
+          <span id="task-assignee-{{ t.id }}" style="font-size: 0.75rem;">{{ t.assigned_to }}</span>
+        </div>
+      </div>
+      {% else %}
+      <p style="font-size: 0.85rem; color: var(--pico-muted-color); text-align: center;">No tasks to do.</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- In Progress Column -->
+  <div class="kanban-column" id="col-in-progress">
+    <div class="kanban-column-header">
+      <h3>In Progress</h3>
+      <span class="badge badge-in_progress" id="count-in-progress">{{ tasks_by_status.get('in_progress', [])|length }}</span>
+    </div>
+    <div class="kanban-column-body" id="list-in-progress">
+      {% for t in tasks_by_status.get('in_progress', []) %}
+      <div
+        class="task-card"
+        id="task-card-{{ t.id }}"
+        data-id="{{ t.id }}"
+        data-status="{{ t.status }}"
+        data-priority="{{ t.priority }}"
+      >
+        <h4 id="task-title-{{ t.id }}">{{ t.title }}</h4>
+        <p id="task-desc-{{ t.id }}">{{ t.description }}</p>
+        <div class="task-meta">
+          <span class="badge badge-{{ t.priority }}" id="task-priority-{{ t.id }}">{{ t.priority }}</span>
+          <span id="task-assignee-{{ t.id }}" style="font-size: 0.75rem;">{{ t.assigned_to }}</span>
+        </div>
+      </div>
+      {% else %}
+      <p style="font-size: 0.85rem; color: var(--pico-muted-color); text-align: center;">No tasks in progress.</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Done Column -->
+  <div class="kanban-column" id="col-done">
+    <div class="kanban-column-header">
+      <h3>Completed</h3>
+      <span class="badge badge-done" id="count-done">{{ tasks_by_status.get('done', [])|length }}</span>
+    </div>
+    <div class="kanban-column-body" id="list-done">
+      {% for t in tasks_by_status.get('done', []) %}
+      <div
+        class="task-card"
+        id="task-card-{{ t.id }}"
+        data-id="{{ t.id }}"
+        data-status="{{ t.status }}"
+        data-priority="{{ t.priority }}"
+      >
+        <h4 id="task-title-{{ t.id }}">{{ t.title }}</h4>
+        <p id="task-desc-{{ t.id }}">{{ t.description }}</p>
+        <div class="task-meta">
+          <span class="badge badge-{{ t.priority }}" id="task-priority-{{ t.id }}">{{ t.priority }}</span>
+          <span id="task-assignee-{{ t.id }}" style="font-size: 0.75rem;">{{ t.assigned_to }}</span>
+        </div>
+      </div>
+      {% else %}
+      <p style="font-size: 0.85rem; color: var(--pico-muted-color); text-align: center;">No tasks completed.</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- Detailed Table View -->
+<article style="margin-top: 2rem;">
+  <header>
+    <h2 style="font-size: 1.15rem; margin: 0;">Task Ledger View</h2>
+  </header>
+  <div class="overflow-auto">
+    <table id="tasks-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Assigned To</th>
+          <th>Priority</th>
+          <th>Status</th>
+          <th>Last Updated</th>
+        </tr>
+      </thead>
+      <tbody id="tasks-table-body">
+        {% for t in tasks %}
+        <tr id="task-row-{{ t.id }}" data-id="{{ t.id }}" data-status="{{ t.status }}">
+          <td id="task-row-id-{{ t.id }}"><strong>{{ t.id }}</strong></td>
+          <td id="task-row-title-{{ t.id }}">{{ t.title }}</td>
+          <td id="task-row-assignee-{{ t.id }}"><small>{{ t.assigned_to }}</small></td>
+          <td id="task-row-priority-{{ t.id }}"><span class="badge badge-{{ t.priority }}">{{ t.priority }}</span></td>
+          <td id="task-row-status-{{ t.id }}"><span class="badge badge-{{ t.status }}">{{ t.status }}</span></td>
+          <td id="task-row-updated-{{ t.id }}"><small>{{ t.updated_at }}</small></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</article>
+{% endblock %}

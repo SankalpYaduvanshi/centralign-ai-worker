@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Expenses - CentrAlign Internal Portal{% endblock %}
+
+{% block content %}
+<section class="page-header-row">
+  <div>
+    <h1 id="page-title">Company Expenses</h1>
+    <p id="page-subtitle">Internal expense ledger and reimbursement tracking</p>
+  </div>
+  <div>
+    <a href="/expenses/new" role="button" id="btn-new-expense">+ New Expense</a>
+  </div>
+</section>
+
+<!-- Summary banner -->
+<article id="expenses-summary-banner" style="padding: 1rem 1.25rem; margin-bottom: 1.5rem;">
+  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+    <div>
+      <span style="color: var(--pico-muted-color);">Total Recorded:</span>
+      <strong id="expenses-total-count" style="margin-left: 0.25rem;">{{ expenses|length }} entries</strong>
+    </div>
+    <div>
+      <span style="color: var(--pico-muted-color);">Cumulative Total:</span>
+      <strong id="expenses-total-amount" style="font-size: 1.2rem; margin-left: 0.25rem;">${{ "%.2f"|format(total_amount) }}</strong>
+    </div>
+  </div>
+</article>
+
+<!-- Expenses Table -->
+<div class="overflow-auto">
+  <table id="expenses-table">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Description</th>
+        <th scope="col">Category</th>
+        <th scope="col">Amount</th>
+        <th scope="col">Invoice Ref</th>
+        <th scope="col">Created By</th>
+        <th scope="col">Status</th>
+      </tr>
+    </thead>
+    <tbody id="expenses-table-body">
+      {% for exp in expenses %}
+      <tr
+        id="expense-row-{{ exp.id }}"
+        data-id="{{ exp.id }}"
+        data-category="{{ exp.category }}"
+        data-status="{{ exp.status }}"
+      >
+        <td id="expense-id-{{ exp.id }}"><strong>{{ exp.id }}</strong></td>
+        <td id="expense-desc-{{ exp.id }}">{{ exp.description }}</td>
+        <td id="expense-cat-{{ exp.id }}">
+          <span class="badge badge-medium">{{ exp.category }}</span>
+        </td>
+        <td id="expense-amount-{{ exp.id }}">${{ "%.2f"|format(exp.amount) }}</td>
+        <td id="expense-ref-{{ exp.id }}">
+          {% if exp.invoice_ref %}
+          <code id="ref-code-{{ exp.id }}">{{ exp.invoice_ref }}</code>
+          {% else %}
+          <span style="color: var(--pico-muted-color);">-</span>
+          {% endif %}
+        </td>
+        <td id="expense-creator-{{ exp.id }}"><small>{{ exp.created_by }}</small></td>
+        <td id="expense-status-{{ exp.id }}">
+          <span class="badge badge-{{ exp.status }}">{{ exp.status }}</span>
+        </td>
+      </tr>
+      {% else %}
+      <tr id="no-expenses-row">
+        <td colspan="7" style="text-align: center; padding: 2rem;">
+          No expense entries recorded yet.
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

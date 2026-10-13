@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}CentrAlign Internal Portal{% endblock %}</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+  <link rel="stylesheet" href="/static/style.css">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <header class="container-fluid" id="portal-header">
+    <nav id="main-navigation">
+      <ul>
+        <li>
+          <a href="/" id="nav-brand" class="brand-link">
+            <span>CentrAlign</span>
+            <span class="brand-badge">Internal</span>
+          </a>
+        </li>
+      </ul>
+      <ul>
+        <li><a href="/" id="nav-dashboard">Dashboard</a></li>
+        <li><a href="/invoices" id="nav-invoices">Invoices</a></li>
+        <li><a href="/expenses" id="nav-expenses">Expenses</a></li>
+        <li><a href="/contacts" id="nav-contacts">Contacts</a></li>
+        <li><a href="/tasks" id="nav-tasks">Tasks</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="container" id="main-content">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="container-fluid" id="portal-footer">
+    <small>CentrAlign Internal Operations System &bull; Autonomous Task Worker Target Environment</small>
+  </footer>
+</body>
+</html>

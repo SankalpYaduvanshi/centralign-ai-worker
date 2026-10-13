@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Vendor Invoices - CentrAlign Internal Portal{% endblock %}
+
+{% block content %}
+<section class="page-header-row">
+  <div>
+    <h1 id="page-title">Vendor Invoices</h1>
+    <p id="page-subtitle">Track, audit, and review external billing invoices</p>
+  </div>
+</section>
+
+<!-- Search and Filter Form -->
+<form id="invoice-search-form" method="get" action="/invoices" class="search-bar-row">
+  <input
+    type="search"
+    id="invoice-search"
+    name="q"
+    placeholder="Search by vendor name, invoice number, or status..."
+    value="{{ query or '' }}"
+    aria-label="Search invoices"
+  />
+  <button type="submit" id="search-button">Search</button>
+  {% if query %}
+  <a href="/invoices" role="button" class="secondary outline" id="clear-search-link">Clear</a>
+  {% endif %}
+</form>
+
+{% if query %}
+<p id="search-results-feedback"><small>Showing results for: <strong>"{{ query }}"</strong> ({{ invoices|length }} found)</small></p>
+{% endif %}
+
+<!-- Invoices Table -->
+<div class="overflow-auto">
+  <table id="invoices-table">
+    <thead>
+      <tr>
+        <th scope="col">Invoice #</th>
+        <th scope="col">Vendor Name</th>
+        <th scope="col">Amount</th>
+        <th scope="col">Due Date</th>
+        <th scope="col">Status</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody id="invoices-table-body">
+      {% for inv in invoices %}
+      <tr
+        id="invoice-row-{{ inv.id }}"
+        data-id="{{ inv.id }}"
+        data-vendor="{{ inv.vendor_name }}"
+        data-status="{{ inv.status }}"
+      >
+        <td id="invoice-number-{{ inv.id }}">
+          <a href="/invoices/{{ inv.id }}" id="view-invoice-{{ inv.id }}"><strong>{{ inv.invoice_number }}</strong></a>
+        </td>
+        <td id="invoice-vendor-{{ inv.id }}">{{ inv.vendor_name }}</td>
+        <td id="invoice-amount-{{ inv.id }}">${{ "%.2f"|format(inv.amount) }} {{ inv.currency }}</td>
+        <td id="invoice-due-{{ inv.id }}">{{ inv.due_date }}</td>
+        <td id="invoice-status-{{ inv.id }}">
+          <span class="badge badge-{{ inv.status }}">{{ inv.status }}</span>
+        </td>
+        <td id="invoice-actions-{{ inv.id }}">
+          <a href="/invoices/{{ inv.id }}" role="button" class="outline btn-sm" id="btn-view-{{ inv.id }}">View</a>
+        </td>
+      </tr>
+      {% else %}
+      <tr id="no-invoices-row">
+        <td colspan="6" style="text-align: center; padding: 2rem;">
+          No invoices match the search criteria.
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
